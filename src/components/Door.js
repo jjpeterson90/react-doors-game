@@ -1,33 +1,37 @@
-import { useState } from "react";
 import GiftImage from "../images/gift.png"
+import React from "react";
 
-function Door(props) {
-  // states
-  const [opened, setOpened] = useState(false)
-  
-  // events
-  const toggleDoor = () => {
-    setOpened((prevOpened) => { return !prevOpened })
-    props.updateResult(props.number)
+class Door extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { opened: false }
+  }
+
+  toggleDoor = () => {
+    let status = this.state.opened
+    this.setState((prevState) => ({opened: !prevState.opened}))
+    this.props.updateResult(this.props.number)
   }
 
   // renders  
-  const getDoorStateStyle = () => {
-    return " " + (opened ? "door-opened" : "door-closed")
+  getDoorStateStyle = () => {
+    return " " + (this.state.opened ? "door-opened" : "door-closed")
   }
 
-  const renderImage = () => {
-    return opened && props.isPrizeDoor
+  renderImage = () => {
+    return this.state.opened && this.props.isPrizeDoor
       ? <img id="image-prize" src={GiftImage} alt="prize" />
       : null
   }
 
-  return (
-    <div className={"door " + getDoorStateStyle()} onClick={toggleDoor}>
-      <div>Door { props.number }</div>
-      { renderImage() }
-    </div>
-  )
+  render() {
+    return (
+      <div className={"door " + this.getDoorStateStyle()} onClick={this.toggleDoor}>
+      <div>Door { this.props.number }</div>
+        { this.renderImage() }
+      </div>
+    )
+  }
 }
 
 export default Door;

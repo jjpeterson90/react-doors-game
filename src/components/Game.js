@@ -1,62 +1,65 @@
-import { useState } from "react"
 import Door from "./Door"
+import React from "react"
 
-function Game(props) {
-  // states
-  const [prizeDoor, /*setPrizeDoor*/] = useState(Math.floor(Math.random() * props.numDoors) + 1)
-  const [result, setResult] = useState(null)
-
-  // events
-  const updateResult = (door) => {
-    if (result !== null)
-      return
-    
-    setResult(door === prizeDoor)
+class Game extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      prizeDoor: (Math.floor(Math.random() * this.props.numDoors) + 1),
+      result: null,
+    }
   }
 
-  const startNewGame = () => {
+  updateResult = (door) => {
+    if (this.state.result !== null)
+      return
+    this.setState({ result: (door === this.state.prizeDoor) })
+  }
+
+  startNewGame = () => {
     window.location.reload();
   }
 
   // renders
-  const renderDoors = () => {
+  renderDoors = () => {
     let doorElements = []
-    for (let i = 1; i <= props.numDoors; i++) {
+    for (let i = 1; i <= this.props.numDoors; i++) {
       doorElements.push(
         <Door key={i} 
               number={i} 
-              isPrizeDoor={i === prizeDoor}
-              updateResult={updateResult}/>
+              isPrizeDoor={i === this.state.prizeDoor}
+              updateResult={this.updateResult}/>
       )
     }
     return doorElements
   }
 
-  const renderResult = () => {
-    if (result === null)
+  renderResult = () => {
+    if (this.state.result === null)
       return ""
-    
     return (
-      result 
+      this.state.result
         ? <p className="result-win">You win!!!</p>
         : <p className="result-lose">You lose!!</p>
     )
   }
-  
-  return (
-    <div className="center-container">
-      <h3>Choose a door:</h3>
-      <div id="door-container">
-        { renderDoors() }
+
+  render() {
+    return (
+      <div className="center-container">
+        <h3>Choose a door:</h3>
+        <div id="door-container">
+          { this.renderDoors() }
+        </div>
+        <div>
+          <button className="btn" onClick={this.startNewGame}>New Game</button>
+        </div>
+        <div>
+          { this.renderResult() }
+        </div>
       </div>
-      <div>
-        <button className="btn" onClick={startNewGame}>New Game</button>
-      </div>
-      <div>
-        { renderResult() }
-      </div>
-    </div>
-  )
+    )
+  }
 }
 
 export default Game;
